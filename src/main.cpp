@@ -12,7 +12,7 @@ int main()
 
     sf::View mainView = window.getDefaultView();
 
-	sf::CircleShape circle{ 11 };
+	sf::CircleShape circle{ 12 };
 	circle.setFillColor(sf::Color::Green);
 
     while (window.isOpen())
