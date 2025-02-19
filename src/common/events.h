@@ -5,9 +5,7 @@
 
 namespace Event
 {
-	void processEvents(sf::RenderWindow& window, sf::View& view);
-
-	void moveView(sf::RenderWindow& window, sf::View& view);
+	void processEvents(sf::RenderWindow& window, std::optional<sf::Event> event);
 }
 
 #endif

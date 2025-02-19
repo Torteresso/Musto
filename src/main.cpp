@@ -2,6 +2,8 @@
 #include <iostream>
 #include "common/events.h"
 #include "configuration.h"
+#include "musto/mustoApplication.h"
+#include "musto/state.h"
 
 int main()
 {
@@ -10,19 +12,22 @@ int main()
 
     window.setFramerateLimit(Config::maxFrameRate);
 
-    sf::View mainView = window.getDefaultView();
-
 	sf::CircleShape circle{ 12 };
 	circle.setFillColor(sf::Color::Green);
 
+    MustoApplication* mustoApplication{ new MustoApplication(new MenuState) };
+
     while (window.isOpen())
     {
-        Event::processEvents(window, mainView);
-        Event::moveView(window, mainView);
-
+        while (const std::optional event = window.pollEvent())
+        {
+            Event::processEvents(window, event);
+            mustoApplication->processEvents(event, window);
+        }
         window.clear();
+
+        mustoApplication->update();
         
-        window.setView(mainView);
         window.draw(circle);
 
         window.display();
