@@ -12,8 +12,6 @@ int main()
 
     window.setFramerateLimit(Config::maxFrameRate);
 
-	sf::CircleShape circle{ 12 };
-	circle.setFillColor(sf::Color::Green);
 
     MustoApplication* mustoApplication{ new MustoApplication(new MenuState) };
 
@@ -24,11 +22,12 @@ int main()
             Event::processEvents(window, event);
             mustoApplication->processEvents(event, window);
         }
-        window.clear();
+        window.clear({20, 20, 17});
+        //window.clear();
 
         mustoApplication->update();
-        
-        window.draw(circle);
+
+        mustoApplication->draw(window);
 
         window.display();
     }
