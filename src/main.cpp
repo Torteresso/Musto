@@ -14,6 +14,9 @@ int main()
 
 
     MustoApplication* mustoApplication{ new MustoApplication(new MenuState) };
+    
+    const float dt = 1.f / static_cast<float>(Config::maxFrameRate);
+
 
     while (window.isOpen())
     {
@@ -23,9 +26,8 @@ int main()
             mustoApplication->processEvents(event, window);
         }
         window.clear({20, 20, 17});
-        //window.clear();
 
-        mustoApplication->update();
+        mustoApplication->update(dt);
 
         mustoApplication->draw(window);
 

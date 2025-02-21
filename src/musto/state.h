@@ -17,7 +17,7 @@ public:
 	void setMustoApplication(MustoApplication* mustoApplication);
 	virtual ~State() {}
 
-	virtual void update() = 0;
+	virtual void update(const float dt) = 0;
 	virtual void draw(sf::RenderTarget& target) = 0;
 	virtual void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) = 0;
 
@@ -31,7 +31,7 @@ class PauseState;
 class PlayingState : public State
 {
 public:
-	void update() override;
+	void update(const float dt) override;
 	void draw(sf::RenderTarget& target);
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
 };
@@ -40,7 +40,7 @@ class PauseState : public State
 {
 public:
 	PauseState();
-	void update() override;
+	void update(const float dt) override;
 	void draw(sf::RenderTarget& target);
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
 
@@ -56,6 +56,7 @@ private:
 	int m_selection{};
 
 	sf::RectangleShape m_background;
+	sf::Text m_pauseText{ sf::Text(m_font) };
 };
 
 class MenuState : public State
@@ -63,7 +64,7 @@ class MenuState : public State
 public:
 	MenuState();
 
-	void update() override;
+	void update(const float dt) override;
 	void draw(sf::RenderTarget& target);
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
 private:
@@ -74,6 +75,9 @@ private:
 
 	std::vector<sf::Text> m_texts;
 	const sf::Font m_font{ sf::Font("res/pixel_font.otf") };
+
+	sf::Text m_title{sf::Text(m_font)};
+
 	int m_selection{};
 };
 

@@ -5,18 +5,18 @@ void State::setMustoApplication(MustoApplication* mustoApplication)
 	m_mustoApplication = mustoApplication; 
 }
 
-void PlayingState::update()
+void PlayingState::update(const float dt)
 {
-
 }
 
 void PlayingState::draw(sf::RenderTarget& target)
 {
-
 }
 
 void PlayingState::processEvents(std::optional<sf::Event> event, sf::RenderWindow& window)
 {
+	m_mustoApplication->m_mustoGame.processEvents(event, window);
+
 	if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>())
 	{
 		if (keyReleased->scancode == sf::Keyboard::Scancode::I)
@@ -48,15 +48,25 @@ PauseState::PauseState()
 		m_texts.push_back(text);
 	}
 
+	m_pauseText.setString("PAUSE");
+	m_pauseText.setLetterSpacing(Config::windowSizef.x / 500);
+	m_pauseText.setCharacterSize(Config::windowSizef.y / 12);
+	sf::FloatRect rc = m_pauseText.getLocalBounds();
+	m_pauseText.setOrigin({ rc.size.x / 2, rc.size.y / 2 });
+	m_pauseText.setPosition({ Config::windowSizef.x / 2, ((Config::windowSizef.y / 4) - m_pauseText.getCharacterSize()) });
+	m_pauseText.setFillColor({240,214,106});
+	m_pauseText.setOutlineColor({116,103,78});
+	m_pauseText.setOutlineThickness(m_pauseText.getCharacterSize() / 15);
 }
 
-void PauseState::update()
+void PauseState::update(const float dt)
 {
 
 }
 
 void PauseState::draw(sf::RenderTarget& target)
 {
+	target.draw(m_pauseText);
 	target.draw(m_background);
 
 	for (int i {}; i < m_texts.size(); i++)
@@ -110,14 +120,29 @@ MenuState::MenuState()
 
 		m_texts.push_back(text);
 	}
+
+	m_title.setString("MUSTO");
+	m_title.setLetterSpacing(Config::windowSizef.x / 200);
+	m_title.setCharacterSize(Config::windowSizef.y / 4);
+	sf::FloatRect rc = m_title.getLocalBounds();
+	m_title.setOrigin({ rc.size.x / 2, rc.size.y / 2 });
+	m_title.setPosition({ Config::windowSizef.x / 2, (Config::windowSizef.y / (10 + 1))});
+	m_title.setFillColor({240,214,106});
+	m_title.setOutlineColor({116,103,78});
+	m_title.setOutlineThickness(m_title.getCharacterSize() / 15);
+
+
 }
 
-void MenuState::update()
+void MenuState::update(const float dt)
 {
+
 }
 
 void MenuState::draw(sf::RenderTarget& target)
 {
+	target.draw(m_title);
+
 	for (int i {}; i < m_texts.size(); i++)
 	{
 		if (m_selection == i) m_texts[i].setFillColor({ 93,182,180});

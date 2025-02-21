@@ -10,9 +10,9 @@ MustoApplication::~MustoApplication()
 	delete m_state;
 }
 
-void MustoApplication::update()
+void MustoApplication::update(const float dt)
 {
-	m_state->update();
+	m_state->update(dt);
 }
 
 void MustoApplication::draw(sf::RenderTarget& target)
