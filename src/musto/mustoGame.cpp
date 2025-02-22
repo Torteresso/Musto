@@ -1,6 +1,6 @@
 #include "musto/mustoGame.h"
 
-MustoGame::MustoGame()
+MustoGame::MustoGame(MustoPhysics& mustoPhysics) : m_physics {mustoPhysics}
 {
 	generateWordList("res/liste_francais.txt");
 	pickWord();
@@ -8,12 +8,12 @@ MustoGame::MustoGame()
 }
 void MustoGame::update(const float dt)
 {
-
+	m_physics.update(dt);
 }
 
 void MustoGame::draw(sf::RenderTarget& target)
 {
-
+	m_physics.draw(target);
 }
 
 void MustoGame::processEvents(std::optional<sf::Event> event, sf::RenderWindow& window)
@@ -23,7 +23,7 @@ void MustoGame::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 		if (textEntered->unicode < 128)
 		{
 			const char letter = static_cast<char>(textEntered->unicode);
-			if (m_validCharacters.contains(letter))
+			if (Config::validCharacters.contains(letter))
 			{
 				addLetterToGuess(letter);
 			}
@@ -37,6 +37,8 @@ void MustoGame::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 	{
 		if (keyReleased->scancode == sf::Keyboard::Scancode::Enter && m_word.size() == m_currentGuess.size())
 			submitGuess();
+		else if (keyReleased->scancode == sf::Keyboard::Scancode::G) m_physics.addLetter('g',
+			{ static_cast<float>(Random::get(0, 1000)), static_cast<float>(Random::get(0, 1000))});
 	}
 
 
@@ -112,7 +114,7 @@ void MustoGame::checkStatus()
 	}
 
 	if (win) m_status = Won;
-	else if (m_evaluatedGuesses.size() >= m_nbTry) m_status = Lost;
+	else if (m_evaluatedGuesses.size() >= Config::nbTry) m_status = Lost;
 	else m_status = InProgress;
 	
 }

@@ -10,6 +10,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <utility>
+#include "configuration.h"
+#include "physics/mustoPhysics.h"
 
 class MustoGame
 {
@@ -28,7 +30,7 @@ class MustoGame
 	};
 
 public:
-	MustoGame();
+	MustoGame(MustoPhysics& mustophysics);
 
 	void update(const float dt);
 	void draw(sf::RenderTarget& target);
@@ -55,8 +57,7 @@ private:
 
 	Status m_status{ InProgress };
 
-	static constexpr std::string_view m_validCharacters{ "abcdefghijklmnopqrstuvwxyz'-. " };
-	static constexpr int m_nbTry{ 6 };
+	MustoPhysics& m_physics;
 };
 
 #endif

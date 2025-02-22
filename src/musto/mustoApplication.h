@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "musto/state.h"
 #include "mustoGame.h"
+#include "physics/mustoPhysics.h"
 
 class State;
 
@@ -18,8 +19,9 @@ public:
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window);
 	void transitionTo(State* state);
 
-	MustoGame m_mustoGame{};
-
+	MustoPhysics m_mustoPhysics{};
+	MustoGame m_mustoGame{m_mustoPhysics};
+	
 private:
 	State* m_state;
 

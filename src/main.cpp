@@ -4,6 +4,7 @@
 #include "configuration.h"
 #include "musto/mustoApplication.h"
 #include "musto/state.h"
+#include "common/utility.h"
 
 int main()
 {
@@ -15,9 +16,13 @@ int main()
 
     MustoApplication* mustoApplication{ new MustoApplication(new MenuState) };
     
+    sf::Clock clock;
     const float dt = 1.f / static_cast<float>(Config::maxFrameRate);
+        
+    std::vector<float> fpsVector{};
+    if (Config::showFps) fpsVector.reserve(1000);
 
-
+        
     while (window.isOpen())
     {
         while (const std::optional event = window.pollEvent())
@@ -25,6 +30,24 @@ int main()
             Event::processEvents(window, event);
             mustoApplication->processEvents(event, window);
         }
+
+        sf::Time elapsed = clock.restart();
+
+        if (Config::showFps)
+        {
+            float fps{ 1.0f / elapsed.asSeconds() };
+            if (fps <= Config::maxFrameRate)
+                fpsVector.push_back(fps);
+
+            if (fpsVector.size() > 50)
+            {
+				std::cout << "FPS : " << Utility::average(fpsVector) << "\n";
+                fpsVector.clear();
+            }
+
+        }
+
+
         window.clear({20, 20, 17});
 
         mustoApplication->update(dt);

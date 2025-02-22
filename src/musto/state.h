@@ -51,12 +51,11 @@ private:
 	static constexpr std::array<std::string_view, 2> m_options {"Continue", "Menu"};
 
 	std::vector<sf::Text> m_texts;
-	const sf::Font m_font{ sf::Font("res/pixel_font.otf") };
 
 	int m_selection{};
 
 	sf::RectangleShape m_background;
-	sf::Text m_pauseText{ sf::Text(m_font) };
+	sf::Text m_pauseText{ sf::Text(Config::font) };
 };
 
 class MenuState : public State
@@ -74,9 +73,8 @@ private:
 	static constexpr std::array<std::string_view, 2> m_options {"Play", "Quit"};
 
 	std::vector<sf::Text> m_texts;
-	const sf::Font m_font{ sf::Font("res/pixel_font.otf") };
 
-	sf::Text m_title{sf::Text(m_font)};
+	sf::Text m_title{sf::Text(Config::font)};
 
 	int m_selection{};
 };
