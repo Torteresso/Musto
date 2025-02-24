@@ -12,6 +12,8 @@
 #include <utility>
 #include "configuration.h"
 #include "physics/mustoPhysics.h"
+#include <algorithm>
+#include <iterator>
 
 class MustoGame
 {
@@ -41,18 +43,22 @@ private:
 	void generateWordList(const char filename[]);
 	void pickWord();
 
+	void addInitialLetters();
 	void addLetterToGuess(const char l);
 	void removeLetterFromGuess();
 
 	void evaluateGuess();
-	void clearGuess();
+	void initGuess();
+	void resetGuess();
 	void checkStatus();
 	void submitGuess();
 
-	std::string_view m_word;
+	std::string_view m_word{ "" };
 	std::vector<std::string> m_wordList;
 	
-	std::vector<char> m_currentGuess;
+	std::string m_currentGuess;
+	std::string m_closestGuess;
+
 	std::vector<std::vector<std::pair<char, LetterState>>> m_evaluatedGuesses;
 
 	Status m_status{ InProgress };

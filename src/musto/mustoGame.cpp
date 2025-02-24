@@ -4,8 +4,10 @@ MustoGame::MustoGame(MustoPhysics& mustoPhysics) : m_physics {mustoPhysics}
 {
 	generateWordList("res/liste_francais.txt");
 	pickWord();
-	clearGuess();
+	initGuess();
+	addInitialLetters();
 }
+
 void MustoGame::update(const float dt)
 {
 	m_physics.update(dt);
@@ -35,10 +37,9 @@ void MustoGame::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 	}
 	else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>())
 	{
-		if (keyReleased->scancode == sf::Keyboard::Scancode::Enter && m_word.size() == m_currentGuess.size())
+		if (keyReleased->scancode == sf::Keyboard::Scancode::Enter
+			&& std::find(m_currentGuess.begin(), m_currentGuess.end(), '#') == m_currentGuess.end())
 			submitGuess();
-		else if (keyReleased->scancode == sf::Keyboard::Scancode::G) m_physics.addLetter('g',
-			{ static_cast<float>(Random::get(0, 1000)), static_cast<float>(Random::get(0, 1000))});
 	}
 
 
@@ -54,24 +55,67 @@ void MustoGame::generateWordList(const char filename[])
 
 	while (std::getline(listWords, word))
 	{
-		m_wordList.push_back(word);
+		if (word.size() == Config::nbLetters) m_wordList.push_back(word);
 	}
 }
 
 void MustoGame::pickWord()
 {
 	m_word = m_wordList[Random::get(0, m_wordList.size() - 1)];
+
+	m_word = "arbre";
+}
+
+void MustoGame::addInitialLetters()
+{
+	for (int i{}; i < Config::nbLetters; i++)
+	{
+		if (m_closestGuess[i] == '#') continue;
+
+		m_physics.addLetter(m_closestGuess[i], m_evaluatedGuesses.size(), i);
+	}
 }
 
 void MustoGame::addLetterToGuess(const char l)
 {
-	if (m_currentGuess.size() < m_word.size()) m_currentGuess.push_back(l);
+	auto it{ std::find(m_currentGuess.begin(), m_currentGuess.end(), '#') };
+
+	if (it == m_currentGuess.end()) return;
+
+	size_t index{ static_cast<size_t>(std::distance(m_currentGuess.begin(), it)) };
+	m_currentGuess[index] = l;
+
+	if (m_closestGuess[index] == l) return;
+
+	if (m_closestGuess[index] != '#')
+	{
+		m_physics.replaceLetter(l, m_evaluatedGuesses.size(), index);
+	}
+	else
+	{
+		m_physics.addLetter(l, m_evaluatedGuesses.size(), index);
+	}
 }
+
 void MustoGame::removeLetterFromGuess()
 {
-	if (m_currentGuess.size() <= 1) return;
+	auto it{ std::find(m_currentGuess.begin(), m_currentGuess.end(), '#') };
 
-	m_currentGuess.pop_back();
+	if (it == m_currentGuess.begin() + 1) return;
+
+	size_t index{ static_cast<size_t>(std::distance(m_currentGuess.begin(), it)) };
+	
+	if (m_closestGuess[index - 1] == m_currentGuess[index - 1])    ;
+	else if (m_closestGuess[index - 1] != '#')
+	{
+		m_physics.replaceLetter(m_closestGuess[index - 1], m_evaluatedGuesses.size(), index - 1);
+	}
+	else
+	{
+		m_physics.removeLetter(m_evaluatedGuesses.size(), index - 1);
+	}
+
+	m_currentGuess[index - 1] = '#';
 }
 
 void MustoGame::evaluateGuess()
@@ -88,10 +132,20 @@ void MustoGame::evaluateGuess()
 
 		if (letterPos != std::string::npos)
 		{
-			if (fictiveWord[i] == l) evaluatedGuess.push_back({ l, correct });
-			else evaluatedGuess.push_back({ l, misplaced });
+			if (fictiveWord[i] == l)
+			{
+				evaluatedGuess.push_back({ l, correct });
+				m_closestGuess[i] = l;
 
-			fictiveWord.erase(letterPos, 1);
+				m_physics.changeLetterColor( {228,94,73}, m_evaluatedGuesses.size(), i);
+			}
+			else
+			{
+				evaluatedGuess.push_back({ l, misplaced });
+				m_physics.changeLetterColor({255,189,39}, m_evaluatedGuesses.size(), i);
+			}
+
+			fictiveWord[letterPos] = '#';
 		}
 		else 
 		{
@@ -119,16 +173,30 @@ void MustoGame::checkStatus()
 	
 }
 
-void MustoGame::clearGuess()
+void MustoGame::initGuess()
 {
-	m_currentGuess.clear();
-	m_currentGuess.push_back(m_word[0]);
+	m_currentGuess.resize(Config::nbLetters, '#');
+	m_closestGuess.resize(Config::nbLetters, '#');
+
+	m_currentGuess[0] = m_word[0];
+	m_closestGuess[0] = m_word[0];
+}
+
+void MustoGame::resetGuess()
+{
+	std::fill(m_currentGuess.begin() + 1, m_currentGuess.begin() + Config::nbLetters - 1, '#');
 }
 
 void MustoGame::submitGuess()
 {
+	std::cout << "TEST1\n";
 	evaluateGuess();
-	clearGuess();
-
+	std::cout << "TEST2\n";
 	checkStatus();
+	std::cout << "TEST2\n";
+
+	resetGuess();
+	std::cout << "TEST4\n";
+	addInitialLetters();
+	std::cout << "TEST5\n";
 }

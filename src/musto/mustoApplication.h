@@ -5,6 +5,8 @@
 #include "musto/state.h"
 #include "mustoGame.h"
 #include "physics/mustoPhysics.h"
+#include "physics/renderer.h"
+#include "physics/solver.h"
 
 class State;
 
@@ -19,9 +21,12 @@ public:
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window);
 	void transitionTo(State* state);
 
-	MustoPhysics m_mustoPhysics{};
+	Solver m_solver{};
+	Renderer m_renderer{m_solver};
+
+	MustoPhysics m_mustoPhysics{m_solver, m_renderer};
 	MustoGame m_mustoGame{m_mustoPhysics};
-	
+
 private:
 	State* m_state;
 

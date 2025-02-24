@@ -24,7 +24,7 @@ public:
 	void addDisk(float radius, const sf::Vector2f& pos, const sf::Vector2f& oldPos,
 		const sf::Color& color, const bool fixed = false, const bool isVirtual = false);
 	void addDiskForObject(float radius, const sf::Vector2f& pos, const sf::Vector2f& oldPos, const sf::Color& color);
-	void addObject();
+	DiskObject* addObject();
 
 	const std::vector<RigidDisk*>& getDisks() const { return m_disks; }
 	const Grid& getGrid() const { return m_grid; }

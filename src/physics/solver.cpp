@@ -1,11 +1,11 @@
 #include "physics/solver.h"
-#include "physics/imageToGrid.h"
 #include <iostream>
 #include <cmath>
 
 Solver::Solver()
 {
 	m_pool = ObjectPool(2 * m_grid.size());
+	m_diskObjects.reserve(m_grid.size());
 	addInitialConfig();
 }
 
@@ -41,6 +41,7 @@ void Solver::clean()
 
 
 			diskObj.clean();
+
 			break;
 		}
 
@@ -50,6 +51,8 @@ void Solver::clean()
         std::advance(it, i);
         m_disks.erase(it);
 
+		m_diskObjects.erase(std::remove_if(m_diskObjects.begin(), m_diskObjects.end(),
+			[](const DiskObject& diskObject) {return diskObject.isDead();}), m_diskObjects.end());
 	}
 }
 
@@ -239,7 +242,7 @@ void Solver::addDiskForObject(float radius, const sf::Vector2f& pos, const sf::V
 	m_objDiskComponents.push_back(m_disks.back());
 }
 
-void Solver::addObject()
+DiskObject* Solver::addObject()
 {
 	for (auto& disk : m_objDiskComponents)
 	{
@@ -253,6 +256,8 @@ void Solver::addObject()
 	m_diskObjects.push_back(DiskObject(m_objDiskComponents));
 
 	m_objDiskComponents.clear();
+
+	return &m_diskObjects.back();
 }
 
 void Solver::clear()

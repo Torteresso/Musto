@@ -112,10 +112,29 @@ private:
 public:
 	int m_internalId;
 
-	DiskObject(std::vector<RigidDisk*>& components, const bool fixed = true) :
+	DiskObject(std::vector<RigidDisk*>& components, const bool fixed = true, const bool fictive = true) :
 		m_components{ components }, m_internalId{ s_internalIdGenerator++ }, m_fixed{ fixed }
 	{
 		fixed ? fix() : unfix();
+		fictive ? makeVirtual() : makeUnvirtual();
+
+	}
+
+	void makeVirtual()
+	{
+		for (auto& disk : m_components)
+		{
+			disk->isVirtual = true;
+		}
+	}
+
+	void makeUnvirtual()
+	{
+		for (auto& disk : m_components)
+		{
+			disk->isVirtual = false;
+		}
+
 	}
 
 	void unfix()
@@ -140,6 +159,8 @@ public:
 
 		m_components.erase(std::remove_if(m_components.begin(), m_components.end(),
 			[](const RigidDisk* disk) {return disk->isDead;}), m_components.end());
+
+		if (m_components.size() <= 0) m_isDead = true;
 	}
 
 	void fix()
@@ -171,6 +192,24 @@ public:
 		{
 			sf::Vector2f randomDir{ static_cast<float>(Random::get(-2000, 2000)), static_cast<float>(Random::get(-2000, 2000))};
 			disk->oldPos += randomDir.normalized() * 5.f;
+		}
+	}
+
+	const bool isDead() const { return m_isDead; }
+
+	void remove()
+	{
+		for (auto& disk : m_components)
+		{
+			disk->isDead = true;
+		}
+	}
+
+	void changeColor(const sf::Color& color)
+	{
+		for (auto& disk : m_components)
+		{
+			disk->color = color;
 		}
 	}
 
@@ -239,6 +278,7 @@ private:
 
 	}
 
+	bool m_isDead{ false };
 	bool m_fixed;
 	std::vector<RigidDisk*> m_components;
 	std::vector<Link> m_links;
