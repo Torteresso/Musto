@@ -24,6 +24,8 @@ class MustoGame
 		wrong,
 	};
 
+public:
+
 	enum Status
 	{
 		Lost,
@@ -31,19 +33,24 @@ class MustoGame
 		InProgress,
 	};
 
-public:
 	MustoGame(MustoPhysics& mustophysics);
+
+	void configureNewGame();
 
 	void update(const float dt);
 	void draw(sf::RenderTarget& target);
 
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window);
 
+	const Status getStatus() const { return m_status; }
+	const std::string_view getWord() const { return m_word; }
+
 private:
 	void generateWordList(const char filename[]);
 	void pickWord();
 
-	void addInitialLetters();
+	void addKnownLetters();
+	void removeKnownLetters();
 	void addLetterToGuess(const char l);
 	void removeLetterFromGuess();
 
@@ -52,6 +59,9 @@ private:
 	void resetGuess();
 	void checkStatus();
 	void submitGuess();
+	const bool guessIsValid() const;
+
+	void cleanAll();
 
 	std::string_view m_word{ "" };
 	std::vector<std::string> m_wordList;

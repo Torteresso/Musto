@@ -39,7 +39,7 @@ void MustoPhysics::draw(sf::RenderTarget& target)
 
 void MustoPhysics::addLetter(const char letter, const int tryNb, const int letterNb)
 {
-	assert(m_objects[tryNb][letterNb] == nullptr);
+	if (m_objects[tryNb][letterNb] != nullptr) removeLetter(tryNb, letterNb);
 
 	const sf::Vector2f& pos{ m_lettersPos[tryNb][letterNb].first };
 
@@ -83,6 +83,8 @@ void MustoPhysics::addLetter(const char letter, const int tryNb, const int lette
 
 void MustoPhysics::generateLettersPos()
 {
+	m_lettersPos.clear();
+
 	float letterSize{ std::min(Config::windowSizef.x / (Config::nbLetters * 1.5f), Config::windowSizef.y / (Config::nbTry * 1.5f)) };
 	
 	for (int nTry{}; nTry < Config::nbTry; nTry++)
@@ -108,19 +110,26 @@ void MustoPhysics::generateLettersPos()
 
 void MustoPhysics::removeLetter(const int tryNb, const int letterNb)
 {
-	assert(m_objects[tryNb][letterNb] != nullptr);
+	if (m_objects[tryNb][letterNb] == nullptr) return;
 	m_objects[tryNb][letterNb]->remove();
 	m_objects[tryNb][letterNb] = nullptr;
-}
-
-void MustoPhysics::replaceLetter(const char newLetter, const int tryNb, const int letterNb)
-{
-	removeLetter(tryNb, letterNb);
-	addLetter(newLetter, tryNb, letterNb);
 }
 
 void MustoPhysics::changeLetterColor(const sf::Color& color, const int tryNb, const int letterNb)
 {
 	assert(m_objects[tryNb][letterNb] != nullptr);
 	m_lettersPos[tryNb][letterNb].second = color;
+}
+
+void MustoPhysics::cleanAll()
+{
+	for (int nTry{}; nTry < Config::nbTry; nTry++)
+	{
+		for (int nLetter{}; nLetter < Config::nbLetters; nLetter++)
+		{
+			m_lettersPos[nTry][nLetter].second = { 48,143,245 };
+			if (m_objects[nTry][nLetter] != nullptr) m_objects[nTry][nLetter]->remove();
+			m_objects[nTry][nLetter] = nullptr;
+		}
+	}
 }

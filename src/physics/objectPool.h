@@ -16,9 +16,9 @@ struct FreeSlot {
 };
 
 
-
+template <typename T>
 struct ObjectPool {
-    using Slot = std::variant<RigidDisk, FreeSlot>;
+    using Slot = std::variant<T, FreeSlot>;
 
     ObjectPool() = default;
 
@@ -27,7 +27,7 @@ struct ObjectPool {
         clear();
     }
 
-    void Free(RigidDisk* object) {
+    void Free(T* object) {
         size_t begin_addr = std::bit_cast<size_t>(slots.data());
         size_t obj_addr = std::bit_cast<size_t>(object);
         assert(obj_addr >= begin_addr);
@@ -35,20 +35,20 @@ struct ObjectPool {
         assert((byte_offset % sizeof(Slot)) == 0);
         size_t id = byte_offset / sizeof(Slot);
 
-        assert(std::holds_alternative<RigidDisk>(slots[id]));
+        assert(std::holds_alternative<T>(slots[id]));
         slots[id] = FreeSlot{ .next = first_free };
         first_free = id;
     }
 
-    RigidDisk* Alloc() {
+    T* Alloc() {
         assert(first_free != kInvalidSlotId);
         size_t id = first_free;
         
         assert(std::holds_alternative<FreeSlot>(slots[id]));
         first_free = std::get<FreeSlot>(slots[id]).next;
 
-        slots[id] = RigidDisk{};
-        return &std::get<RigidDisk>(slots[id]);
+        slots[id] = T{};
+        return &std::get<T>(slots[id]);
     }
 
     void clear()

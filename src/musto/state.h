@@ -14,8 +14,10 @@ class MustoApplication;
 class State
 {
 public:
-	void setMustoApplication(MustoApplication* mustoApplication);
+	State(MustoApplication* mustoApplication) : m_mustoApplication {mustoApplication} {}
 	virtual ~State() {}
+
+	void setMustoApplication(MustoApplication* mustoApplication) { m_mustoApplication = mustoApplication; }
 
 	virtual void update(const float dt) = 0;
 	virtual void draw(sf::RenderTarget& target) = 0;
@@ -31,6 +33,8 @@ class PauseState;
 class PlayingState : public State
 {
 public:
+	PlayingState(MustoApplication* mustoApplication);
+
 	void update(const float dt) override;
 	void draw(sf::RenderTarget& target);
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
@@ -39,7 +43,7 @@ public:
 class PauseState : public State
 {
 public:
-	PauseState();
+	PauseState(MustoApplication* mustoApplication);
 	void update(const float dt) override;
 	void draw(sf::RenderTarget& target);
 	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
@@ -58,10 +62,33 @@ private:
 	sf::Text m_pauseText{ sf::Text(Config::font) };
 };
 
+class EndGameState : public State
+{
+public:
+	EndGameState(MustoApplication* mustoApplication);
+	void update(const float dt) override;
+	void draw(sf::RenderTarget& target);
+	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
+
+private:
+	void upSelection();
+	void downSelection();
+
+	static constexpr std::array<std::string_view, 2> m_options {"Play again", "Menu"};
+
+	std::vector<sf::Text> m_texts;
+
+	int m_selection{};
+
+	sf::RectangleShape m_background;
+	sf::Text m_endGameText{ sf::Text(Config::font) };
+
+};
+
 class MenuState : public State
 {
 public:
-	MenuState();
+	MenuState(MustoApplication* mustoApplication);
 
 	void update(const float dt) override;
 	void draw(sf::RenderTarget& target);

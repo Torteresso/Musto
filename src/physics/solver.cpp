@@ -4,8 +4,8 @@
 
 Solver::Solver()
 {
-	m_pool = ObjectPool(2 * m_grid.size());
-	m_diskObjects.reserve(m_grid.size());
+	m_diskPool = ObjectPool<RigidDisk>(2 * m_grid.size());
+	m_diskObjectPool = ObjectPool<DiskObject>(m_grid.size()/100);
 	addInitialConfig();
 }
 
@@ -37,22 +37,31 @@ void Solver::clean()
 
 		for (auto& diskObj : m_diskObjects)
 		{
-			if (!diskObj.contains(*m_disks[i])) continue;
+			if (!diskObj->contains(*m_disks[i])) continue;
 
 
-			diskObj.clean();
+			diskObj->clean();
 
 			break;
 		}
 
-		m_pool.Free(m_disks[i]);
+		m_diskPool.Free(m_disks[i]);
 
 		auto it = m_disks.begin();
         std::advance(it, i);
         m_disks.erase(it);
+	}
 
-		m_diskObjects.erase(std::remove_if(m_diskObjects.begin(), m_diskObjects.end(),
-			[](const DiskObject& diskObject) {return diskObject.isDead();}), m_diskObjects.end());
+	for (int j{}; j < m_diskObjects.size(); j++)
+	{
+		if (!m_diskObjects[j]->isDead()) continue;
+
+		m_diskObjectPool.Free(m_diskObjects[j]);
+		
+		auto it = m_diskObjects.begin();
+        std::advance(it, j);
+        m_diskObjects.erase(it);
+
 	}
 }
 
@@ -60,7 +69,7 @@ void Solver::solveLinks()
 {
 	for (auto& diskObj : m_diskObjects)
 	{
-		diskObj.applyLinks();
+		diskObj->applyLinks();
 	}
 }
 
@@ -155,20 +164,6 @@ void Solver::updatePos(const float dt)
 	}
 }
 
-
-void Solver::removeObjectsFromDisk(const RigidDisk& disk)
-{
-	for (int i {}; i < m_diskObjects.size(); i++)
-	{
-		if (m_diskObjects[i].contains(disk))
-		{
-			m_diskObjects[i].explode();
-			m_diskObjects.erase(m_diskObjects.begin() + i);
-			return;
-		}
-	}
-}
-
 void Solver::applyConstraints(RigidDisk& disk)
 {
 	const float safety{ 2.f };
@@ -217,7 +212,7 @@ void Solver::addDisk(float radius, const sf::Vector2f& pos, const sf::Vector2f& 
 	const int diskId{ static_cast<int>(m_disks.size()) };
 
 		
-	RigidDisk* disk = m_pool.Alloc();
+	RigidDisk* disk = m_diskPool.Alloc();
 
 	disk->radius = radius;
 	disk->pos = newPos;
@@ -253,18 +248,23 @@ DiskObject* Solver::addObject()
 		disk->fixed = false;
 	}
 
-	m_diskObjects.push_back(DiskObject(m_objDiskComponents));
+	DiskObject* diskObj = m_diskObjectPool.Alloc();
+
+	diskObj->initialize(m_objDiskComponents);
+
+	m_diskObjects.emplace_back(diskObj);
 
 	m_objDiskComponents.clear();
 
-	return &m_diskObjects.back();
+	return m_diskObjects.back();
 }
 
 void Solver::clear()
 {
 	m_grid.clear();
 	m_disks.clear();
-	m_pool.clear();
+	m_diskPool.clear();
+	m_diskObjectPool.clear();
 	m_objDiskComponents.clear();
 	m_diskObjects.clear();
 	m_occupied.clear();

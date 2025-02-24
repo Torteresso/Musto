@@ -1,8 +1,7 @@
 #include "musto/mustoApplication.h"
 
-MustoApplication::MustoApplication(State* state) : m_state {state}
+MustoApplication::MustoApplication() : m_state {new MenuState(this)}
 {
-	m_state->setMustoApplication(this);
 }
 
 MustoApplication::~MustoApplication()
@@ -30,5 +29,4 @@ void MustoApplication::transitionTo(State* state)
 	if (m_state != nullptr) delete m_state;
 
 	m_state = state;
-	m_state->setMustoApplication(this);
 }

@@ -49,12 +49,13 @@ private:
 
 	void addInitialConfig();
 
-	ObjectPool m_pool;
+	ObjectPool<RigidDisk> m_diskPool;
+	ObjectPool<DiskObject> m_diskObjectPool;
 
 	std::vector<RigidDisk*> m_disks;
 
 	std::vector<RigidDisk*> m_objDiskComponents;
-	std::vector<DiskObject> m_diskObjects;
+	std::vector<DiskObject*> m_diskObjects;
 
 	std::vector<int> m_finalPos;
 

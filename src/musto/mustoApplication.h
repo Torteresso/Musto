@@ -13,7 +13,7 @@ class State;
 class MustoApplication
 {
 public:
-	MustoApplication(State* state);
+	MustoApplication();
 	~MustoApplication();
 
 	void update(const float dt);

@@ -20,9 +20,10 @@ public:
 
 	void addLetter(const char letter, const int tryNb, const int letterNb);
 	void removeLetter(const int tryNb, const int letterNb);
-	void replaceLetter(const char newLetter, const int tryNb, const int letterNb);
 	
 	void changeLetterColor(const sf::Color& color, const int tryNb, const int letterNb);
+
+	void cleanAll();
 
 private:
 	void generateLettersPos();

@@ -112,9 +112,12 @@ private:
 public:
 	int m_internalId;
 
-	DiskObject(std::vector<RigidDisk*>& components, const bool fixed = true, const bool fictive = true) :
-		m_components{ components }, m_internalId{ s_internalIdGenerator++ }, m_fixed{ fixed }
+	DiskObject() : m_internalId{ s_internalIdGenerator++ } {}
+
+	void initialize(std::vector<RigidDisk*>& components, const bool fixed = true, const bool fictive = true)
 	{
+		m_components = components;
+		m_fixed = fixed;
 		fixed ? fix() : unfix();
 		fictive ? makeVirtual() : makeUnvirtual();
 

@@ -14,7 +14,7 @@ int main()
     window.setFramerateLimit(Config::maxFrameRate);
 
 
-    MustoApplication* mustoApplication{ new MustoApplication(new MenuState) };
+    MustoApplication* mustoApplication{ new MustoApplication };
     
     sf::Clock clock;
     const float dt = 1.f / static_cast<float>(Config::maxFrameRate);
