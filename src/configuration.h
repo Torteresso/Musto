@@ -17,7 +17,7 @@ namespace Config
 	constexpr float								diskRadius{ 2 };
 
 	constexpr int								nbTry{ 6 };
-	constexpr int								nbLetters{ 5 };
+	constexpr int								nbLetters{ 6 };
 	constexpr bool								showFps{ true };
 }
 

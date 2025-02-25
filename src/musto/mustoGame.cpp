@@ -66,6 +66,7 @@ void MustoGame::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 const bool MustoGame::guessIsValid() const
 {
 	return std::find(m_wordList.begin(), m_wordList.end(), m_currentGuess) != m_wordList.end();
+	//return true;
 }
 
 void MustoGame::generateWordList(const char filename[])
@@ -144,32 +145,40 @@ void MustoGame::evaluateGuess()
 
 	std::vector<std::pair<char, LetterState>> evaluatedGuess;
 
+	evaluatedGuess.resize(Config::nbLetters, { '#', unEvaluated});
+
 	for (int i{}; i < m_currentGuess.size(); i++)
 	{
+		const char l{ m_currentGuess[i] };
+
+		if (m_word[i] == l)
+		{
+			evaluatedGuess[i] = { l, correct };
+			m_closestGuess[i] = l;
+
+			m_physics.changeLetterColor( {228,94,73}, m_evaluatedGuesses.size(), i);
+			fictiveWord[i] = '#';
+		}
+
+	}
+
+	for (int i{}; i < m_currentGuess.size(); i++)
+	{
+		if (evaluatedGuess[i].first != '#') continue;
+
 		const char l{ m_currentGuess[i] };
 
 		std::string::size_type letterPos{ fictiveWord.find(l) };
 
 		if (letterPos != std::string::npos)
 		{
-			if (fictiveWord[i] == l)
-			{
-				evaluatedGuess.push_back({ l, correct });
-				m_closestGuess[i] = l;
-
-				m_physics.changeLetterColor( {228,94,73}, m_evaluatedGuesses.size(), i);
-			}
-			else
-			{
-				evaluatedGuess.push_back({ l, misplaced });
-				m_physics.changeLetterColor({255,189,39}, m_evaluatedGuesses.size(), i);
-			}
-
+			evaluatedGuess[i] = { l, misplaced };
+			m_physics.changeLetterColor({255,189,39}, m_evaluatedGuesses.size(), i);
 			fictiveWord[letterPos] = '#';
 		}
 		else 
 		{
-			evaluatedGuess.push_back({ l, wrong });
+			evaluatedGuess[i] = { l, wrong };
 		}
 	}
 

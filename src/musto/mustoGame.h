@@ -22,6 +22,7 @@ class MustoGame
 		correct,
 		misplaced,
 		wrong,
+		unEvaluated,
 	};
 
 public:

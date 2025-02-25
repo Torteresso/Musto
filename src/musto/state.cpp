@@ -222,7 +222,7 @@ MenuState::MenuState(MustoApplication* mustoApplication) : State(mustoApplicatio
 		m_texts.push_back(text);
 	}
 
-	m_title.setString("MUSTOD");
+	m_title.setString("MUSTO");
 	m_title.setLetterSpacing(Config::windowSizef.x / 200);
 	m_title.setCharacterSize(Config::windowSizef.y / 4);
 	sf::FloatRect rc = m_title.getLocalBounds();
