@@ -18,6 +18,7 @@ void Solver::update(const float dt)
 {
 	const int nbSubStep{ 8 };
 	const float subDt{ dt / static_cast<float>(nbSubStep) };
+
 	for (int i{}; i < nbSubStep; i++)
 	{
 		updateGrid();
@@ -77,6 +78,7 @@ void Solver::updateGrid()
 {
 	for (int i {}; i < m_disks.size(); i++)
 	{
+		if (m_disks[i]->isVirtual) continue;
 		m_grid.addDisk(*m_disks[i], i);
 	}
 }

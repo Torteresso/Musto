@@ -111,7 +111,7 @@ void MustoPhysics::generateLettersPos()
 void MustoPhysics::removeLetter(const int tryNb, const int letterNb)
 {
 	if (m_objects[tryNb][letterNb] == nullptr) return;
-	m_objects[tryNb][letterNb]->remove();
+	m_objects[tryNb][letterNb]->explode();
 	m_objects[tryNb][letterNb] = nullptr;
 }
 

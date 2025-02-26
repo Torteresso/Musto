@@ -47,7 +47,7 @@ public:
 	const std::string_view getWord() const { return m_word; }
 
 private:
-	void generateWordList(const char filename[]);
+	void generateWordList(std::vector<std::string>& wordList, const char filename[]);
 	void pickWord();
 
 	void addKnownLetters();
@@ -66,6 +66,7 @@ private:
 
 	std::string_view m_word{ "" };
 	std::vector<std::string> m_wordList;
+	std::vector<std::string> m_allWords;
 	
 	std::string m_currentGuess;
 	std::string m_closestGuess;

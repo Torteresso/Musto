@@ -52,7 +52,7 @@ private:
 	void upSelection();
 	void downSelection();
 
-	static constexpr std::array<std::string_view, 2> m_options {"Continue", "Menu"};
+	static constexpr std::array<std::string_view, 2> m_options {"Continuer", "Menu"};
 
 	std::vector<sf::Text> m_texts;
 
@@ -74,7 +74,7 @@ private:
 	void upSelection();
 	void downSelection();
 
-	static constexpr std::array<std::string_view, 2> m_options {"Play again", "Menu"};
+	static constexpr std::array<std::string_view, 2> m_options {"Rejouer", "Menu"};
 
 	std::vector<sf::Text> m_texts;
 
@@ -97,7 +97,7 @@ private:
 	void upSelection();
 	void downSelection();
 
-	static constexpr std::array<std::string_view, 2> m_options {"Play", "Quit"};
+	static constexpr std::array<std::string_view, 2> m_options {"Jouer", "Quitter"};
 
 	std::vector<sf::Text> m_texts;
 

@@ -193,8 +193,12 @@ public:
 		m_links.clear();
 		for (auto& disk : m_components)
 		{
+			disk->isVirtual = false;
+			disk->fixed = false;
+
+			const float explosionForce{ 1.5f };
 			sf::Vector2f randomDir{ static_cast<float>(Random::get(-2000, 2000)), static_cast<float>(Random::get(-2000, 2000))};
-			disk->oldPos += randomDir.normalized() * 5.f;
+			disk->oldPos += randomDir.normalized() * explosionForce;
 		}
 	}
 

@@ -95,7 +95,7 @@ void PauseState::processEvents(std::optional<sf::Event> event, sf::RenderWindow&
 		else if (keyReleased->scancode == sf::Keyboard::Scancode::Escape) m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
 		else if (keyReleased->scancode == sf::Keyboard::Scancode::Enter)
 		{
-			if (m_options[m_selection] == "Continue") m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
+			if (m_options[m_selection] == "Continuer") m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
 			else if (m_options[m_selection] == "Menu") m_mustoApplication->transitionTo(new MenuState(m_mustoApplication));
 		}
 	}
@@ -142,9 +142,9 @@ EndGameState::EndGameState(MustoApplication* mustoApplication) : State(mustoAppl
 
 
 	if (m_mustoApplication->m_mustoGame.getStatus() == MustoGame::Status::Lost)
-			m_endGameText.setString( "DEFEAT, the correct word was : " + std::string(m_mustoApplication->m_mustoGame.getWord()));
+			m_endGameText.setString( "défaite, le mot était : " + std::string(m_mustoApplication->m_mustoGame.getWord()));
 	else 
-			m_endGameText.setString( "VICTORY, you found the word : " + std::string(m_mustoApplication->m_mustoGame.getWord()));
+			m_endGameText.setString( "victoire, le mot était : " + std::string(m_mustoApplication->m_mustoGame.getWord()));
 	m_endGameText.setLetterSpacing(Config::windowSizef.x / 800);
 	m_endGameText.setCharacterSize(Config::windowSizef.y / 12);
 	sf::FloatRect rc = m_endGameText.getLocalBounds();
@@ -185,7 +185,7 @@ void EndGameState::processEvents(std::optional<sf::Event> event, sf::RenderWindo
 		else if (keyReleased->scancode == sf::Keyboard::Scancode::Up) downSelection();
 		else if (keyReleased->scancode == sf::Keyboard::Scancode::Enter)
 		{
-			if (m_options[m_selection] == "Play again")
+			if (m_options[m_selection] == "Rejouer")
 			{
 				m_mustoApplication->m_mustoGame.configureNewGame();
 				m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
@@ -262,12 +262,12 @@ void MenuState::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 		else if (keyReleased->scancode == sf::Keyboard::Scancode::Up) downSelection();
 		else if (keyReleased->scancode == sf::Keyboard::Scancode::Enter)
 		{
-			if (m_options[m_selection] == "Play")
+			if (m_options[m_selection] == "Jouer")
 			{
 				m_mustoApplication->m_mustoGame.configureNewGame();
 				m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
 			}
-			else if (m_options[m_selection] == "Quit") window.close();
+			else if (m_options[m_selection] == "Quitter") window.close();
 		}
 	}
 }

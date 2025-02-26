@@ -2,7 +2,8 @@
 
 MustoGame::MustoGame(MustoPhysics& mustoPhysics) : m_physics {mustoPhysics}
 {
-	generateWordList("res/liste_francais.txt");
+	generateWordList(m_wordList, "res/chosenWords_fr.txt");
+	generateWordList(m_allWords, "res/allWords_fr.txt");
 	configureNewGame();
 }
 
@@ -65,11 +66,11 @@ void MustoGame::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 
 const bool MustoGame::guessIsValid() const
 {
-	return std::find(m_wordList.begin(), m_wordList.end(), m_currentGuess) != m_wordList.end();
+	return std::find(m_allWords.begin(), m_allWords.end(), m_currentGuess) != m_allWords.end();
 	//return true;
 }
 
-void MustoGame::generateWordList(const char filename[])
+void MustoGame::generateWordList(std::vector<std::string>& wordList, const char filename[])
 {
 	std::ifstream listWords{ filename };
 
@@ -79,7 +80,11 @@ void MustoGame::generateWordList(const char filename[])
 
 	while (std::getline(listWords, word))
 	{
-		if (word.size() == Config::nbLetters) m_wordList.push_back(word);
+		if (word.size() == Config::nbLetters)
+		{
+			std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+			wordList.push_back(word);
+		}
 	}
 }
 
