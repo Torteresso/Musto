@@ -15,6 +15,15 @@ MustoPhysics::MustoPhysics(Solver& solver, Renderer& renderer) : m_solver {solve
 		m_letters.push_back(letter);
 	}
 
+	generateObjects();
+
+	generateLettersPos();
+}
+
+void MustoPhysics::generateObjects()
+{
+	m_objects.clear();
+
 	for (int i{}; i < Config::nbTry; i++)
 	{
 		std::vector<DiskObject*> currentObjs;
@@ -22,8 +31,7 @@ MustoPhysics::MustoPhysics(Solver& solver, Renderer& renderer) : m_solver {solve
 
 		m_objects.push_back(currentObjs);
 	}
-	
-	generateLettersPos();
+
 }
 
 void MustoPhysics::update(const float dt)
@@ -132,4 +140,18 @@ void MustoPhysics::cleanAll()
 			m_objects[nTry][nLetter] = nullptr;
 		}
 	}
+}
+
+void MustoPhysics::reconfigure()
+{
+	generateLettersPos();
+	for (auto& objectList : m_objects)
+	{
+		for (auto& object : objectList)
+		{
+			if (object != nullptr) object->remove();
+			object = nullptr;
+		}
+	}
+	generateObjects();
 }

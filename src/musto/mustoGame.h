@@ -47,7 +47,7 @@ public:
 	const std::string_view getWord() const { return m_word; }
 
 private:
-	void generateWordList(std::vector<std::string>& wordList, const char filename[]);
+	void generateWordList(std::vector<std::string>& wordList, const std::string& filename);
 	void pickWord();
 
 	void addKnownLetters();
@@ -63,6 +63,7 @@ private:
 	const bool guessIsValid() const;
 
 	void cleanAll();
+	void reconfigure();
 
 	std::string_view m_word{ "" };
 	std::vector<std::string> m_wordList;
@@ -70,6 +71,10 @@ private:
 	
 	std::string m_currentGuess;
 	std::string m_closestGuess;
+
+	int m_gameNbTry{ Config::nbTry };
+	int m_gameNbLetters{ Config::nbLetters };
+	std::string_view m_gameLanguage{ Config::language };
 
 	std::vector<std::vector<std::pair<char, LetterState>>> m_evaluatedGuesses;
 

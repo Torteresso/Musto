@@ -2,13 +2,18 @@
 
 MustoGame::MustoGame(MustoPhysics& mustoPhysics) : m_physics {mustoPhysics}
 {
-	generateWordList(m_wordList, "res/chosenWords_fr.txt");
-	generateWordList(m_allWords, "res/allWords_fr.txt");
+	generateWordList(m_wordList, "res/chosenWords_" + static_cast<std::string>(Config::language) + ".txt" );
+	generateWordList(m_allWords, "res/allWords_" + static_cast<std::string>(Config::language) + ".txt");
+	
 	configureNewGame();
 }
 
 void MustoGame::configureNewGame()
 {
+	if (m_gameNbLetters != Config::nbLetters || m_gameNbTry != Config::nbTry || m_gameLanguage != Config::language)
+	{
+		reconfigure();
+	}
 	cleanAll();
 	pickWord();
 	initGuess();
@@ -22,6 +27,20 @@ void MustoGame::cleanAll()
 	m_evaluatedGuesses.clear();
 	m_status = InProgress;
 	m_physics.cleanAll();
+}
+
+void MustoGame::reconfigure()
+{
+	if (m_gameNbLetters != Config::nbLetters || m_gameLanguage != Config::language)
+	{
+		generateWordList(m_wordList, "res/chosenWords_" + static_cast<std::string>(Config::language) + ".txt" );
+		generateWordList(m_allWords, "res/allWords_" + static_cast<std::string>(Config::language) + ".txt");
+	}
+
+	m_physics.reconfigure();
+
+	m_gameNbTry = Config::nbTry;
+	m_gameNbLetters = Config::nbLetters;
 }
 
 void MustoGame::update(const float dt)
@@ -70,8 +89,10 @@ const bool MustoGame::guessIsValid() const
 	//return true;
 }
 
-void MustoGame::generateWordList(std::vector<std::string>& wordList, const char filename[])
+void MustoGame::generateWordList(std::vector<std::string>& wordList, const std::string& filename)
 {
+	wordList.clear();
+
 	std::ifstream listWords{ filename };
 
 	assert(listWords && "Impossible to load file containing words to generate from");
@@ -84,6 +105,7 @@ void MustoGame::generateWordList(std::vector<std::string>& wordList, const char 
 		{
 			std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 			wordList.push_back(word);
+		
 		}
 	}
 }

@@ -8,6 +8,7 @@
 #include <string_view>
 #include <SFML/Graphics.hpp>
 #include "configuration.h"
+#include "common/translation.h"
 
 class MustoApplication;
 
@@ -85,6 +86,32 @@ private:
 
 };
 
+class OptionState : public State
+{
+public:
+	OptionState(MustoApplication* mustoApplication);
+	void update(const float dt) override;
+	void draw(sf::RenderTarget& target);
+	void processEvents(std::optional<sf::Event> event, sf::RenderWindow& window) override;
+
+private:
+	void upSelection();
+	void downSelection();
+	void increaseSelection(const int optionNumber);
+	void decreaseSelection(const int optionNumber);
+
+	static constexpr std::array<std::string_view, 4> m_options {"Nombre de lettres : ", "Nombre d'essais : ", "Langue : ", "Retour"};
+
+	std::vector<sf::Text> m_texts;
+
+	int m_selection{};
+
+	sf::RectangleShape m_background;
+	sf::Text m_optionText{ sf::Text(Config::font) };
+
+};
+
+
 class MenuState : public State
 {
 public:
@@ -97,7 +124,7 @@ private:
 	void upSelection();
 	void downSelection();
 
-	static constexpr std::array<std::string_view, 2> m_options {"Jouer", "Quitter"};
+	static constexpr std::array<std::string_view, 3> m_options {"Jouer", "Options", "Quitter"};
 
 	std::vector<sf::Text> m_texts;
 

@@ -24,9 +24,11 @@ public:
 	void changeLetterColor(const sf::Color& color, const int tryNb, const int letterNb);
 
 	void cleanAll();
+	void reconfigure();
 
 private:
 	void generateLettersPos();
+	void generateObjects();
 	
 	Solver& m_solver;
 	Renderer& m_renderer;
