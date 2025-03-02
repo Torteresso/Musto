@@ -1,7 +1,7 @@
 PRESENTATION
 ============
 
-TUSMO is my version of the famous French game motus, using my [physics engine](https://github.com/Torteresso/First-Physics-Engine).
+MUSTO is my version of the famous French game motus, using my [physics engine](https://github.com/Torteresso/First-Physics-Engine).
 
 Current state : 
 
