@@ -14,6 +14,8 @@
 #include "physics/mustoPhysics.h"
 #include <algorithm>
 #include <iterator>
+#include <chrono>
+#include <ctime>
 
 class MustoGame
 {
@@ -36,7 +38,7 @@ public:
 
 	MustoGame(MustoPhysics& mustophysics);
 
-	void configureNewGame();
+	void configureNewGame(const bool daily=false);
 
 	void update(const float dt);
 	void draw(sf::RenderTarget& target);
@@ -49,6 +51,7 @@ public:
 private:
 	void generateWordList(std::vector<std::string>& wordList, const std::string& filename);
 	void pickWord();
+	void generateDailyWord();
 
 	void addKnownLetters();
 	void removeKnownLetters();
@@ -63,11 +66,13 @@ private:
 	const bool guessIsValid() const;
 
 	void cleanAll();
-	void reconfigure();
+	void reconfigure(const int nbTry, const int nbLetters);
 
 	std::string_view m_word{ "" };
 	std::vector<std::string> m_wordList;
 	std::vector<std::string> m_allWords;
+
+	std::string m_dailyWord{""};
 	
 	std::string m_currentGuess;
 	std::string m_closestGuess;

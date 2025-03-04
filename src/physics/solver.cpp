@@ -225,7 +225,7 @@ void Solver::addDisk(float radius, const sf::Vector2f& pos, const sf::Vector2f& 
 
 	m_disks.emplace_back(disk);
 
-	if (diskId % 1000 == 0) std::cout << "Number of disks : " << m_disks.size() << "\n";
+	//if (diskId % 1000 == 0) std::cout << "Number of disks : " << m_disks.size() << "\n";
 }
 
 void Solver::addDiskForObject(float radius, const sf::Vector2f& pos, const sf::Vector2f& oldPos, const sf::Color& color)

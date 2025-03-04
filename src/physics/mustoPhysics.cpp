@@ -24,10 +24,10 @@ void MustoPhysics::generateObjects()
 {
 	m_objects.clear();
 
-	for (int i{}; i < Config::nbTry; i++)
+	for (int i{}; i < m_nbTry; i++)
 	{
 		std::vector<DiskObject*> currentObjs;
-		currentObjs.resize(Config::nbLetters, nullptr);
+		currentObjs.resize(m_nbLetters, nullptr);
 
 		m_objects.push_back(currentObjs);
 	}
@@ -57,8 +57,8 @@ void MustoPhysics::addLetter(const char letter, const int tryNb, const int lette
 
 	const sf::Image& image{ m_letters[letterPos] };
 
-	float ratioX{ Config::windowSizef.x / (image.getSize().x * Config::nbLetters * 1.5f) };
-	float ratioY{ Config::windowSizef.y / (image.getSize().y * Config::nbTry * 1.5f) };
+	float ratioX{ Config::windowSizef.x * Config::windowGameSizeRatio / (image.getSize().x * m_nbLetters * 1.5f) };
+	float ratioY{ Config::windowSizef.y * Config::windowGameSizeRatio / (image.getSize().y * m_nbTry * 1.5f) };
 
 	float ratio{ std::min(ratioX, ratioY) };
 
@@ -93,17 +93,18 @@ void MustoPhysics::generateLettersPos()
 {
 	m_lettersPos.clear();
 
-	float letterSize{ std::min(Config::windowSizef.x / (Config::nbLetters * 1.5f), Config::windowSizef.y / (Config::nbTry * 1.5f)) };
+	const float letterSize{ std::min(Config::windowSizef.x * Config::windowGameSizeRatio / (m_nbLetters * 1.5f), 
+							Config::windowSizef.y * Config::windowGameSizeRatio / (m_nbTry * 1.5f)) };
 	
-	for (int nTry{}; nTry < Config::nbTry; nTry++)
+	for (int nTry{}; nTry < m_nbTry; nTry++)
 	{
 		std::vector<std::pair<sf::Vector2f, sf::Color>> currentTryLettersPos;
-		for (int nLetter{}; nLetter < Config::nbLetters; nLetter++)
+		for (int nLetter{}; nLetter < m_nbLetters; nLetter++)
 		{
-			const float startingX{Config::windowSizef.x / 2 - letterSize * 1.5f * Config::nbLetters / 2 + letterSize / 4};
+			const float startingX{Config::windowSizef.x / 2 - letterSize * 1.5f * m_nbLetters / 2 + letterSize / 4};
 			const float x{ startingX + letterSize * nLetter * 1.5f };
 
-			const float startingY{Config::windowSizef.y / 2 - letterSize * 1.5f * Config::nbTry / 2 + letterSize/4};
+			const float startingY{Config::windowSizef.y / 2 - letterSize * 1.5f * m_nbTry / 2 + letterSize/4};
 			const float y{ startingY + letterSize * nTry * 1.5f };
 
 			currentTryLettersPos.push_back({ { x, y }, {48,143,245} });
@@ -131,9 +132,9 @@ void MustoPhysics::changeLetterColor(const sf::Color& color, const int tryNb, co
 
 void MustoPhysics::cleanAll()
 {
-	for (int nTry{}; nTry < Config::nbTry; nTry++)
+	for (int nTry{}; nTry < m_nbTry; nTry++)
 	{
-		for (int nLetter{}; nLetter < Config::nbLetters; nLetter++)
+		for (int nLetter{}; nLetter < m_nbLetters; nLetter++)
 		{
 			m_lettersPos[nTry][nLetter].second = { 48,143,245 };
 			if (m_objects[nTry][nLetter] != nullptr) m_objects[nTry][nLetter]->remove();
@@ -142,8 +143,10 @@ void MustoPhysics::cleanAll()
 	}
 }
 
-void MustoPhysics::reconfigure()
+void MustoPhysics::reconfigure(const int nbTry, const int nbLetters)
 {
+	m_nbTry = nbTry;
+	m_nbLetters = nbLetters;
 	generateLettersPos();
 	for (auto& objectList : m_objects)
 	{

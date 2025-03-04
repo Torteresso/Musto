@@ -400,6 +400,11 @@ void MenuState::processEvents(std::optional<sf::Event> event, sf::RenderWindow& 
 				m_mustoApplication->m_mustoGame.configureNewGame();
 				m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
 			}
+			else if (m_options[m_selection] == "Mot du jour")
+			{
+				m_mustoApplication->m_mustoGame.configureNewGame(true);
+				m_mustoApplication->transitionTo(new PlayingState(m_mustoApplication));
+			}
 			else if (m_options[m_selection] == "Options") m_mustoApplication->transitionTo(new OptionState(m_mustoApplication));
 			else if (m_options[m_selection] == "Quitter") window.close();
 		}

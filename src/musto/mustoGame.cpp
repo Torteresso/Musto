@@ -4,18 +4,32 @@ MustoGame::MustoGame(MustoPhysics& mustoPhysics) : m_physics {mustoPhysics}
 {
 	generateWordList(m_wordList, "res/chosenWords_" + static_cast<std::string>(Config::language) + ".txt" );
 	generateWordList(m_allWords, "res/allWords_" + static_cast<std::string>(Config::language) + ".txt");
-	
+	generateDailyWord();
+
 	configureNewGame();
 }
 
-void MustoGame::configureNewGame()
+void MustoGame::configureNewGame(const bool daily)
 {
-	if (m_gameNbLetters != Config::nbLetters || m_gameNbTry != Config::nbTry || m_gameLanguage != Config::language)
+	if (m_gameLanguage != Config::language)
 	{
-		reconfigure();
+		generateDailyWord();
 	}
+	if (daily)
+	{
+		m_word = m_dailyWord;
+		reconfigure(Config::nbTry, m_word.size());
+	}
+	else
+	{
+		pickWord();
+		if (m_gameNbLetters != Config::nbLetters || m_gameNbTry != Config::nbTry || m_gameLanguage != Config::language)
+		{
+			reconfigure(Config::nbTry, Config::nbLetters);
+		}
+	}
+
 	cleanAll();
-	pickWord();
 	initGuess();
 	addKnownLetters();
 }
@@ -29,18 +43,16 @@ void MustoGame::cleanAll()
 	m_physics.cleanAll();
 }
 
-void MustoGame::reconfigure()
+void MustoGame::reconfigure(const int nbTry, const int nbLetters)
 {
-	if (m_gameNbLetters != Config::nbLetters || m_gameLanguage != Config::language)
-	{
-		generateWordList(m_wordList, "res/chosenWords_" + static_cast<std::string>(Config::language) + ".txt" );
-		generateWordList(m_allWords, "res/allWords_" + static_cast<std::string>(Config::language) + ".txt");
-	}
+	m_gameNbTry = nbTry;
+	m_gameNbLetters = nbLetters;
+	m_gameLanguage = Config::language;
 
-	m_physics.reconfigure();
+	generateWordList(m_wordList, "res/chosenWords_" + static_cast<std::string>(Config::language) + ".txt" );
+	generateWordList(m_allWords, "res/allWords_" + static_cast<std::string>(Config::language) + ".txt");
 
-	m_gameNbTry = Config::nbTry;
-	m_gameNbLetters = Config::nbLetters;
+	m_physics.reconfigure(nbTry, nbLetters);
 }
 
 void MustoGame::update(const float dt)
@@ -101,13 +113,45 @@ void MustoGame::generateWordList(std::vector<std::string>& wordList, const std::
 
 	while (std::getline(listWords, word))
 	{
-		if (word.size() == Config::nbLetters)
+		if (word.size() == m_gameNbLetters)
 		{
 			std::transform(word.begin(), word.end(), word.begin(), ::tolower);
 			wordList.push_back(word);
 		
 		}
 	}
+}
+
+void MustoGame::generateDailyWord()
+{
+	std::tm startDate { 0, 0, 0, 3, 2, 125 }; // Date :  03/03/2025
+	std::time_t startTime{ std::mktime(&startDate) };
+	std::time_t presentTime{ std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()) };
+
+	const int daySinceStart{ static_cast<int>(std::difftime(presentTime, startTime) / (60 * 60 * 24) )};
+
+	std::cout << "Il s'est ecoule " << daySinceStart << " jours depuis le debut des mots du jours !\n";
+
+	std::ifstream listWords{ "res/dailyWords_" + static_cast<std::string>(Config::language) + ".txt" };
+
+	assert(listWords && "Impossible to load file containing words to generate from");
+
+	std::string word{};
+	int wordNb{ 0 };
+
+	while (std::getline(listWords, word))
+	{
+		if (wordNb == daySinceStart)
+		{
+			m_dailyWord = word;
+			break;
+		}
+		wordNb++;
+	}
+
+	std::cout << "Le mot du jour est : " << m_dailyWord << "\n";
+
+	assert(m_dailyWord != "");
 }
 
 void MustoGame::pickWord()
@@ -117,7 +161,7 @@ void MustoGame::pickWord()
 
 void MustoGame::addKnownLetters()
 {
-	for (int i{}; i < Config::nbLetters; i++)
+	for (int i{}; i < m_gameNbLetters; i++)
 	{
 		if (m_closestGuess[i] == '#') continue;
 
@@ -127,7 +171,7 @@ void MustoGame::addKnownLetters()
 
 void MustoGame::removeKnownLetters()
 {
-	for (int i{ 1 }; i < Config::nbLetters; i++)
+	for (int i{ 1 }; i < m_gameNbLetters; i++)
 	{
 		if (m_closestGuess[i] == '#') continue;
 
@@ -172,7 +216,7 @@ void MustoGame::evaluateGuess()
 
 	std::vector<std::pair<char, LetterState>> evaluatedGuess;
 
-	evaluatedGuess.resize(Config::nbLetters, { '#', unEvaluated});
+	evaluatedGuess.resize(m_gameNbLetters, { '#', unEvaluated});
 
 	for (int i{}; i < m_currentGuess.size(); i++)
 	{
@@ -224,15 +268,15 @@ void MustoGame::checkStatus()
 	}
 
 	if (win) m_status = Won;
-	else if (m_evaluatedGuesses.size() >= Config::nbTry) m_status = Lost;
+	else if (m_evaluatedGuesses.size() >= m_gameNbTry) m_status = Lost;
 	else m_status = InProgress;
 	
 }
 
 void MustoGame::initGuess()
 {
-	m_currentGuess.resize(Config::nbLetters, '#');
-	m_closestGuess.resize(Config::nbLetters, '#');
+	m_currentGuess.resize(m_gameNbLetters, '#');
+	m_closestGuess.resize(m_gameNbLetters, '#');
 
 	m_currentGuess[0] = m_word[0];
 	m_closestGuess[0] = m_word[0];
@@ -240,7 +284,7 @@ void MustoGame::initGuess()
 
 void MustoGame::resetGuess()
 {
-	std::fill(m_currentGuess.begin() + 1, m_currentGuess.begin() + Config::nbLetters, '#');
+	std::fill(m_currentGuess.begin() + 1, m_currentGuess.begin() + m_gameNbLetters, '#');
 }
 
 void MustoGame::submitGuess()

@@ -13,29 +13,33 @@ void Renderer::updateVertices(const std::vector<std::vector<std::pair<sf::Vector
 
 	const sf::Vector2f& textureSize{ static_cast<sf::Vector2f>(m_texture.getSize()) };
 
-	if (lettersPos.size() != 0) m_vertices.resize(nbDisks * 6 + Config::nbLetters * Config::nbTry * 6);
+	if (lettersPos.size() != 0) m_vertices.resize(nbDisks * 6 + lettersPos[0].size() * lettersPos.size() * 6);
 	else m_vertices.resize(nbDisks * 6);
 
 	if (lettersPos.size() != 0)
 	{
-		assert(lettersPos.size() == Config::nbTry && lettersPos[0].size() == Config::nbLetters);
+		const float letterSize{ std::min(Config::windowSizef.x * Config::windowGameSizeRatio / (lettersPos[0].size() * 1.5f),
+									Config::windowSizef.y * Config::windowGameSizeRatio/ (lettersPos.size() * 1.5f)) };
 
-		float letterSize{ std::min(Config::windowSizef.x / (Config::nbLetters * 1.5f), Config::windowSizef.y / (Config::nbTry * 1.5f)) };
 
-		for (int j{}; j < Config::nbTry * Config::nbLetters; j++)
+		const float spaceBetweenBoxes{ 0.9f };
+		const float boxSize{ letterSize * 1.5f * spaceBetweenBoxes };
+
+		for (int j{}; j < lettersPos.size() * lettersPos[0].size(); j++)
 		{
-			const int currentTryNb{ j / Config::nbLetters };
-			const int currentLetterNb{ j- currentTryNb * Config::nbLetters };
+			const int currentTryNb{ static_cast<int>(j / lettersPos[0].size())};
+			const int currentLetterNb{ static_cast<int>(j- currentTryNb * lettersPos[0].size())};
 
-			const sf::Vector2f& pos{ lettersPos[currentTryNb][currentLetterNb].first};
+			const sf::Vector2f pos{ lettersPos[currentTryNb][currentLetterNb].first 
+												- sf::Vector2f{(boxSize - letterSize)/2.f, (boxSize - letterSize)/2.f} };
 			const sf::Color& color{ lettersPos[currentTryNb][currentLetterNb].second };
 
 			m_vertices[6 * j + 0].position = pos;
-			m_vertices[6 * j + 1].position = pos + sf::Vector2f{ letterSize, 0.f };
-			m_vertices[6 * j + 2].position = pos + sf::Vector2f{ letterSize, letterSize };
+			m_vertices[6 * j + 1].position = pos + sf::Vector2f{ boxSize, 0.f };
+			m_vertices[6 * j + 2].position = pos + sf::Vector2f{ boxSize, boxSize };
 			m_vertices[6 * j + 3].position = pos;
-			m_vertices[6 * j + 4].position = pos + sf::Vector2f{ 0.f, letterSize };
-			m_vertices[6 * j + 5].position = pos + sf::Vector2f{ letterSize, letterSize };
+			m_vertices[6 * j + 4].position = pos + sf::Vector2f{ 0.f, boxSize };
+			m_vertices[6 * j + 5].position = pos + sf::Vector2f{ boxSize, boxSize };
 
 			m_vertices[6 * j + 0].color = color;
 			m_vertices[6 * j + 1].color = color;
@@ -53,9 +57,9 @@ void Renderer::updateVertices(const std::vector<std::vector<std::pair<sf::Vector
 		}
 	}
 
-	for (int i{ static_cast<int>(lettersPos.size() * Config::nbLetters) }; i < nbDisks + lettersPos.size() * Config::nbLetters; i++)
+	for (int i{ static_cast<int>(lettersPos.size() * lettersPos[0].size())}; i < nbDisks + lettersPos.size() * lettersPos[0].size(); i++)
 	{
-		const auto& disk{ *disks[i - lettersPos.size() * Config::nbLetters] };
+		const auto& disk{ *disks[i - lettersPos.size() * lettersPos[0].size()]};
 		const auto& pos{ disk.pos };
 		const auto& color{ disk.color };
 		const float radius{ disk.radius };

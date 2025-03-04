@@ -28,7 +28,8 @@ namespace Translation
 		{"Victoire, le mot était : ",	{"Victoire, le mot était : ", "Victory, the word was : "}},
 		{"Défaite, le mot était : ",	{"Défaite, le mot était : ", "Defeat, the word was : "}},
 		{"Langue : ", 					{"Langue : ", "Language : "}},
-		{"Français",					{"Français", "English"}}
+		{"Français",					{"Français", "English"}},
+		{"Mot du jour",					{"Mot du jour", "Daily word"}}
 	
 
 	

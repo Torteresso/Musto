@@ -24,7 +24,7 @@ public:
 	void changeLetterColor(const sf::Color& color, const int tryNb, const int letterNb);
 
 	void cleanAll();
-	void reconfigure();
+	void reconfigure(const int nbTry, const int nbLetters);
 
 private:
 	void generateLettersPos();
@@ -32,6 +32,9 @@ private:
 	
 	Solver& m_solver;
 	Renderer& m_renderer;
+
+	int m_nbTry{Config::nbTry};
+	int m_nbLetters{Config::nbLetters};
 
 	std::vector<sf::Image> m_letters;
 	std::vector<std::vector<std::pair<sf::Vector2f, sf::Color>>> m_lettersPos;

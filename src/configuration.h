@@ -1,7 +1,7 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics.hpp>
 #include <string_view>
 #include <utility>
 #include <array>
@@ -10,24 +10,27 @@
 
 namespace Config
 {
-	constexpr sf::Vector2u windowSize{ 1920, 1200 };
-	constexpr sf::Vector2f windowSizef{ static_cast<sf::Vector2f>(windowSize) };
-	int const maxFrameRate{ 60 };
+	const sf::Vector2u							windowSize					{ sf::VideoMode::getDesktopMode().size};
+	const sf::Vector2f							windowSizef					{ static_cast<sf::Vector2f>(windowSize) };
 
-	const sf::Font font{ sf::Font("res/pixel_font.otf") };
-	constexpr std::string_view validCharacters{ "abcdefghijklmnopqrstuvwxyz'-." };
+	constexpr float								windowGameSizeRatio			{ 0.8f };
 
-	constexpr sf::Vector2f						gravity{ 0.f, 1000.f };
-	constexpr float								diskRadius{ 2 };
+	int const									maxFrameRate				{ 60 };
 
-	constexpr std::pair<int, int>		extremumNbTry{ 1, 12 };
-	constexpr std::pair<int, int>		extremumNbLetters{ 2, 14};
-	inline int									nbTry{ 6 };
-	inline int									nbLetters{ 7 };
+	const sf::Font								font						{ sf::Font("res/pixel_font.otf") };
+	constexpr std::string_view					validCharacters				{ "abcdefghijklmnopqrstuvwxyz'-." };
 
-	constexpr bool								showFps{ true };
+	constexpr sf::Vector2f						gravity						{ 0.f, 1000.f };
+	constexpr float								diskRadius					{ 2 };
 
-	inline std::string_view						language{ "fr" };
+	constexpr std::pair<int, int>				extremumNbTry				{ 1, 12 };
+	constexpr std::pair<int, int>				extremumNbLetters			{ 2, 14};
+	inline int									nbTry						{ 6 };
+	inline int									nbLetters					{ 7 };
+
+	constexpr bool								showFps						{ false };
+
+	inline std::string_view						language					{ "fr" };
 
 }
 

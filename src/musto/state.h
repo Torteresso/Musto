@@ -124,7 +124,7 @@ private:
 	void upSelection();
 	void downSelection();
 
-	static constexpr std::array<std::string_view, 3> m_options {"Jouer", "Options", "Quitter"};
+	static constexpr std::array<std::string_view, 4> m_options {"Jouer", "Mot du jour", "Options", "Quitter"};
 
 	std::vector<sf::Text> m_texts;
 

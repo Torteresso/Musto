@@ -39,8 +39,8 @@ class Grid
 
 	static constexpr float m_cellSize{ 2 * Config::diskRadius };
 	static constexpr int m_padding{ 1 };
-	static constexpr int m_nbRow{static_cast<int>(Config::windowSize.y / (2*Config::diskRadius)) + 2 * m_padding};
-	static constexpr int m_nbCol{static_cast<int>(Config::windowSize.x / (2*Config::diskRadius)) + 2 * m_padding};
+	const int m_nbRow{static_cast<int>(Config::windowSize.y / (2*Config::diskRadius)) + 2 * m_padding};
+	const int m_nbCol{static_cast<int>(Config::windowSize.x / (2*Config::diskRadius)) + 2 * m_padding};
 
 public:
 	Grid()
@@ -92,7 +92,7 @@ public:
 		return { x, y };
 	}
 
-	static const int coordToIndex(const int x, const int y)
+	const int coordToIndex(const int x, const int y)
 	{
 		return x + y * m_nbCol;
 	}
@@ -102,7 +102,7 @@ public:
 		return (i >= 0 && i < m_disks.size());
 	}
 
-	static const int posToIndex(const sf::Vector2f& pos)
+	const int posToIndex(const sf::Vector2f& pos)
 	{
 		return (static_cast<int>(pos.y / m_cellSize) + m_padding) * m_nbCol + static_cast<int>(pos.x / m_cellSize) + m_padding;
 	}
