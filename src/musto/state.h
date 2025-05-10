@@ -130,6 +130,9 @@ private:
 
 	sf::Text m_title{sf::Text(Config::font)};
 
+	sf::RectangleShape m_background;
+	sf::Shader m_backgroundShader;
+
 	int m_selection{};
 };
 

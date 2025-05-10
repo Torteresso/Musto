@@ -27,8 +27,10 @@ public:
 	MustoPhysics m_mustoPhysics{m_solver, m_renderer};
 	MustoGame m_mustoGame{m_mustoPhysics};
 
+	sf::Clock m_clock;
 private:
 	State* m_state;
+
 
 
 };

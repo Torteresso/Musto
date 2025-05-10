@@ -2,6 +2,7 @@
 
 MustoApplication::MustoApplication() : m_state {new MenuState(this)}
 {
+	m_clock.restart();
 }
 
 MustoApplication::~MustoApplication()

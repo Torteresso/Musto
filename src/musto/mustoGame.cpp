@@ -130,7 +130,10 @@ void MustoGame::generateDailyWord()
 
 	const int daySinceStart{ static_cast<int>(std::difftime(presentTime, startTime) / (60 * 60 * 24) )};
 
-	std::cout << "Il s'est ecoule " << daySinceStart << " jours depuis le debut des mots du jours !\n";
+	if (daySinceStart < 0)
+	{
+		m_dailyWord = "cheating";
+	}
 
 	std::ifstream listWords{ "res/dailyWords_" + static_cast<std::string>(Config::language) + ".txt" };
 
@@ -148,8 +151,6 @@ void MustoGame::generateDailyWord()
 		}
 		wordNb++;
 	}
-
-	std::cout << "Le mot du jour est : " << m_dailyWord << "\n";
 
 	assert(m_dailyWord != "");
 }

@@ -24,9 +24,9 @@ namespace Translation
 		{"Pause",						{"Pause", "Pause"}},
 		{"Rejouer",						{"Rejouer", "Play again" } },
 		{"Nombre de lettres : ",		{"Nombre de lettres : ", "Number of letters : "}},
-		{"Nombre d'essais : ",			{"Nombre d'essais : ", "Number of attemps : "}},
-		{"Victoire, le mot était : ",	{"Victoire, le mot était : ", "Victory, the word was : "}},
-		{"Défaite, le mot était : ",	{"Défaite, le mot était : ", "Defeat, the word was : "}},
+		{"Nombre d'essais : ",			{"Nombre d'essais : ", "Number of attempts : "}},
+		{"Victoire, le mot était : ",	{"Gagné, le mot était : ", "You won, the word was : "}},
+		{"Défaite, le mot était : ",	{"Perdu, le mot était : ", "You lost, the word was : "}},
 		{"Langue : ", 					{"Langue : ", "Language : "}},
 		{"Français",					{"Français", "English"}},
 		{"Mot du jour",					{"Mot du jour", "Daily word"}}

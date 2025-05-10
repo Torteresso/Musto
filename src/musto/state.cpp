@@ -368,15 +368,28 @@ MenuState::MenuState(MustoApplication* mustoApplication) : State(mustoApplicatio
 
 		m_texts.push_back(text);
 	}
+
+	m_background.setSize({ Config::windowSizef.x, Config::windowSizef.y });
+
+	if (!m_backgroundShader.loadFromFile("res/mainShader.glsl", sf::Shader::Type::Fragment))
+	{
+		std::cout << "Error loading shader" << std::endl;
+	}
+
+	m_backgroundShader.setUniform("u_resolution", m_background.getSize());
+	m_backgroundShader.setUniform("u_windowSize", Config::windowSizef);
+	m_backgroundShader.setUniform("u_mouse", m_background.getPosition());
+
 }
 
 void MenuState::update(const float dt)
 {
-
+	m_backgroundShader.setUniform("u_time", m_mustoApplication->m_clock.getElapsedTime().asSeconds());
 }
 
 void MenuState::draw(sf::RenderTarget& target)
 {
+	target.draw(m_background, &m_backgroundShader);
 	target.draw(m_title);
 
 	for (int i {}; i < m_texts.size(); i++)

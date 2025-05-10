@@ -8,8 +8,10 @@
 
 int main()
 {
+    //sf::Context context;
+
     auto window = sf::RenderWindow(sf::VideoMode({Config::windowSize.x, Config::windowSize.y}), "CMake SFML Project", 
-                                   sf::Style::Default, sf::State::Fullscreen);
+             sf::Style::Default, sf::State::Fullscreen);
 
     window.setFramerateLimit(Config::maxFrameRate);
 
